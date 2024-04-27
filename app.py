@@ -58,4 +58,4 @@ if res:
         - **GitHub**: [RaghunandhanG GitHUB](https://github.com/RaghunandhanG)
         """
     )
-     "Made with ❤️ in iQube"
+     "**Made with ❤️ in iQube**"
