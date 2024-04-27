@@ -66,7 +66,7 @@ def upload_file_in_db(uploaded_file,file_path):
 
 
 
-def find_grade_and_credit(info):
+def find_grade_and_credit(info , course_names):
     
     credits = []
     grade = []
@@ -76,6 +76,7 @@ def find_grade_and_credit(info):
     dct = {'AB':0 , 'B':6 , 'O':10, 'A':8, 'A+':9,'B+':7,'C':5 , "RA":0 , "W":0 , "P" : 0 , "F":0}
     grade = [dct[i] for i in grade]
     credits = [int(i) for i in credits]
+
         
     return grade , credits
 
@@ -93,15 +94,17 @@ def calculate_sgpa(grades , credits):
             total_credits += credits[i]
         else:
             back_logs += 1
-    return round(sum / total_credits , 2) , total_credits , weights , back_logs
+    return round(sum / total_credits , 2) , total_credits , weights , back_logs , sum
 
 
 
-def generate_df(weights , course_names):
+def generate_df(weights , course_names , sum , grades):
     
      data = pandas.DataFrame()
+     weights = [round(i/sum* 100 , 2) for i in weights]
      data['weights'] = weights
      data['Subjects'] = course_names
+     data["Grades"] = grades
      
      return data
      
@@ -110,56 +113,21 @@ def generate_df(weights , course_names):
 def get_course_names(text):
     
 
-  
+        
 
 
-        import google.generativeai as genai
+        from together import Together
 
-        genai.configure(api_key="AIzaSyAbEwy660KBFDw9qpfKCtNoNK6m5Ozhssg")
+        client = Together(api_key="9a61e2798de6101e801d7784c4ccdd6baab3384475b91b2b5114f925c74339c2")
 
-        # Set up the model
-        generation_config = {
-        "temperature": 1,
-        "top_p": 0.95,
-        "top_k": 0,
-        "max_output_tokens": 8192,
-        }
-
-        safety_settings = [
-        {
-            "category": "HARM_CATEGORY_HARASSMENT",
-            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        {
-            "category": "HARM_CATEGORY_HATE_SPEECH",
-            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        {
-            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        {
-            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-            "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-        },
-        ]
-
-        model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest",
-                                    generation_config=generation_config,
-                                    safety_settings=safety_settings)
-
-        prompt_parts = [
-        "The user will input the text containing the course names of a semester. Output the course names in a python like text format. The order of the ourse names should be in the same order as in the text provided by the user.\n\n\nIMPORTANT: The extraction of the COURSE NAMES should be in the same order as the in the text. Output only the course names not the course code and the output should only be in text format like a python list\nNOTE:The output format should be a text not  a CODE!!",
-        "input : Sd/.. Controller of ExaminationEnd Semester Examination - Dec-2023 Student Name: RAGHUNANDHAN G Reg. No.: 22BME078 Semester: ODD UG�R21 Gender: Male Program: B.E�MECHANICAL ENGINEERING ODD UG�R21 U18TLR2001-TAMILS AND TECHNOLOGY7 B+ 1 Pass ODD UG�R21 U18MEI3201-METAL CUTTING AND COMPUTER AIDED MANUFACTURING8 A 4 Pass ODD UG�R21 U18MEP3006-MACHINE DRAWING LABORATORY10 O 1 Pass ODD UG�R21 U18MET3002-ENGINEERING MECHANICS8 A 3 Pass ODD UG�R21 U18MET3003-ENGINEERING THERMODYNAMICS8 A 3 Pass ODD UG�R21 U18MET3004-COMPUTER AIDED DESIGN9 A+ 3 Pass ODD UG�R21 U18MET3005-MACHINE DRAWING 8 A 2 Pass ODD UG�R21 U18INI3600-ENGINEERING CLINIC -III 10 O 3 Pass ODD UG�R21 U18MAT3101-PARTIAL DIFFERENTIAL EQUATIONS AND TRANSFORMS9 A+ 4 Pass Credit Registered : 24 Credit Completed : 24Semest er Cour se NameGrade pointGrade Credit Result status",
-        "output : ['TAMILS AND TECHNOLOGY', 'METAL CUTTING AND COMPUTER AIDED MANUFACTURING', 'MACHINE DRAWING LABORATORY', 'ENGINEERING MECHANICS', 'ENGINEERING THERMODYNAMICS', 'COMPUTER AIDED DESIGN', 'MACHINE DRAWING', 'ENGINEERING CLINIC -III', 'PARTIAL DIFFERENTIAL EQUATIONS AND TRANSFORMS'] ",
-        f"input: {text}",
-        "output: ",
-        ]
+        response = client.chat.completions.create(
+            model="meta-llama/Llama-3-8b-chat-hf",
+            messages=[{"role": "user", "content": f"Extract the course names in this raw text '{text}. In a python list like format'"}],)
+        
+        print(response.choices[0].message.content)
 
 
-
-        response = model.generate_content(prompt_parts)
-        course_names = response.text
+        course_names = response.choices[0].message.content
         course_names = course_names.replace("\n" , " ")
         course_names = extract(course_names)
         course_names = course_names.split(",")
@@ -179,31 +147,37 @@ def extract(text):
 
 def plot(data):
     import plotly.graph_objects as go
+    import plotly.express as px
 
-    # Sample data
 
     # Create bar chart
     fig = go.Figure(data=[go.Bar(
         x=data["Subjects"],  # Categories on x-axis
-        y=data["weights"]      # Values on y-axis
+        y=data["Grades"]
     )])
 
     # Customize layout
     fig.update_layout(
-        title="Weightage of each Course",
-        yaxis_title="Values",
+        title="Grades in each Course",
         width=1000,  # Set the width of the figure
         height=600, # Set the height of the figure
+        xaxis=dict(title='Subjects'),  # Label for x-axis
+        yaxis=dict(title='Grade') 
     )
 
-    # Show plot
-    st.write(fig)
-    
-    
-    
-def select_course_names(course_names,credits , grades):
+    fig.update_xaxes(title_text="Courses")
+    fig.update_yaxes(title_text="Grade")
+    fig.update_yaxes(color = "lightcyan")
 
-    with st.form("my_form"):
+    st.write(fig)
+    fig = px.pie(data, values='weights', names='Subjects', title='Weightage of each Course in %')
+    st.write(fig)
+        
+    
+    
+def select_course_names(course_names,credits , grades ):
+
+   
 
         selected_course_names =  st.multiselect("Select the Courese to be excluded",course_names)
 
@@ -213,16 +187,14 @@ def select_course_names(course_names,credits , grades):
                 course_names.pop(index)
                 credits.pop(index)
                 grades.pop(index)
-        submitted = st.form_submit_button("Submit")
     
     
 
-    if len(selected_course_names) != 0:
-        return selected_course_names ,credits , grades , True 
+        if len(selected_course_names) != 0:
+            return selected_course_names ,credits , grades , True 
 
-    else:
-        return selected_course_names , credits , grades, False
-    
+        else:
+            return selected_course_names , credits , grades, False
 
 
 
@@ -233,3 +205,13 @@ def get_dict(lst , course_names):
     c = zip(b,a)
     d = dict(tuple(c))
     return d
+
+def get_dict(a , b):
+
+    c = zip(a,b)
+    d  = dict(tuple(c))
+    return d
+
+
+
+
