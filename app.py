@@ -59,4 +59,4 @@ if res:
         """
     )
      
-     "***Made with ❤️ in iQube***"
+     "\n\n***Made with ❤️ in iQube***"
