@@ -8,7 +8,7 @@ import random
 st.title("SGPA CALCULATOR")
 
 uploaded_file , res = upload_file()
-if res and st.button("Submit"):
+if res:
             file_path = os.path.join("uploads", uploaded_file.name)
             upload_file_in_db(uploaded_file , file_path)
             text = read_file(file_path)
