@@ -8,13 +8,16 @@ import random
 st.title("SGPA CALCULATOR")
 
 uploaded_file , res = upload_file()
-if res:
+if res:            
+    try:
             file_path = os.path.join("uploads", uploaded_file.name)
             upload_file_in_db(uploaded_file , file_path)
             text = read_file(file_path)
             info = get_info(text)
             course_names , name , reg_no = get_course_names(text)
-
+                
+    except:
+            st.toast("Try again with a valid file!!")
             reg_no_color = random.choice([
     "red", "green", "blue", "orange", "purple", "pink", "brown", 
     "teal", "navy", "olive", "maroon", "lime", "aqua", "fuchsia", 
