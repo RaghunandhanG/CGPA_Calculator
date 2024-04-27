@@ -4,7 +4,7 @@ import os
 import pandas
 import numpy as np
 import re
-
+import time 
 
 def upload_file():
 
@@ -122,19 +122,21 @@ def get_course_names(text):
 
         response = client.chat.completions.create(
             model="meta-llama/Llama-3-8b-chat-hf",
-            messages=[{"role": "user", "content": f"Extract the course names in this raw text '{text}. In a python list like format'"}],)
+            messages=[{"role": "user", "content": f"extract  the course names in a python list and also extract the name and register number in a dictionary {text}. IMPORTANT : DO NOT CONSIDER THE COURSE CODES AND DO NOT PROVIDE CODE AND JUST KEEP IT SIMPLE BY ONLY PROVIDING THE LISTS AND DICTIONARY."}],)
         
-        print(response.choices[0].message.content)
 
 
-        course_names = response.choices[0].message.content
-        course_names = course_names.replace("\n" , " ")
+        # st.write(name_reg)
+        msg = response.choices[0].message.content
+        name_reg = extract_name_reg(msg)
+        course_names = msg.replace("\n" , " ")
         course_names = extract(course_names)
         course_names = course_names.split(",")
         course_names = [i.replace("\n" , " ") for i in course_names]
-        
+        name = list(name_reg.values())[0]
+        reg_no = list(name_reg.values())[1]
 
-        return course_names
+        return course_names , name , reg_no
 
 
 def extract(text):
@@ -214,4 +216,39 @@ def get_dict(a , b):
 
 
 
+def get_name(text):
 
+    
+        from together import Together
+
+        client = Together(api_key="c2bfddf8883ac6b65b328e3e447017a63ead0fe7550f653770a4def525ae20db ")
+        time.sleep(1)
+        response = client.chat.completions.create(
+            model="meta-llama/Meta-Llama-3-70B",
+            messages=[{"role": "user", "content": f"Extract the student name and the Register number in a dictionary format from this text '{text}.IMPORTANT:I only want the dictionary and i don't want any other text and the output should be like 'name':'Raghunandhan G' , 'number':'22BME078'"}])
+        name_reg = response.choices[0].message.content
+        get_name(name_reg)
+        name_reg = name_reg.split(',')
+        name_reg = [i.split(":") for i in name_reg]
+        get_name(name_reg)
+
+
+
+def extract_name_reg(text):
+
+    extracted_text = ""
+    for i in range(len(text)):
+        if "{" not in text[i:] and "}" in text[i:]:
+            if text[i] != "}":
+                extracted_text += text[i]
+    text = extracted_text
+    text = text.split(',')
+    text = [i.split(":") for i in text]
+    a = text[0]
+    a = [i.replace('"' , "") for i in a]
+    b = text[1]
+    b = [i.replace("'" , "") for i in b]
+    d = dict()
+    d[a[0]] = a[1]
+    d[b[0]] = b[1]
+    return d
