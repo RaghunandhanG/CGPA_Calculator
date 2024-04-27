@@ -58,4 +58,6 @@ if res:
         - **GitHub**: [RaghunandhanG GitHUB](https://github.com/RaghunandhanG)
         """
     )
-     "**Made with ❤️ in iQube**"
+     col1, col2 ,col3= st.columns(3)
+
+     col3."**Made with ❤️ in iQube**"
