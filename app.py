@@ -4,7 +4,7 @@ from app_functions import *
 import os
 import time
 
-if "load_state" not in st.session_state:
+st.title("SGPA CALCULATOR")
     st.session_state.load_state = False
 uploaded_file , res = upload_file()
 if res:
