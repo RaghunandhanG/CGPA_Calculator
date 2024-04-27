@@ -59,4 +59,4 @@ if res:
         """
     )
      col1, col2 ,col3= st.columns(3)
-     col3."**Made with ❤️ in iQube**"
+     col2.subheader(""**Made with ❤️ in iQube**"")
