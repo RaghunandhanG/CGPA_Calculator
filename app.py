@@ -48,14 +48,3 @@ if res:
         - **GitHub**: [RaghunandhanG GitHUB](https://github.com/RaghunandhanG)
         """
     )
-
-
-
-
-
-
-
-
-
-
- 
