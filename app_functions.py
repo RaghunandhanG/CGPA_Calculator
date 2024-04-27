@@ -181,7 +181,7 @@ def select_course_names(course_names,credits , grades ):
 
    
 
-        selected_course_names =  st.multiselect("Select the Courese to be excluded",course_names)
+        selected_course_names =  st.multiselect("Select the Coureses to be exclude",course_names)
 
         for i in selected_course_names:
             if i in course_names:
