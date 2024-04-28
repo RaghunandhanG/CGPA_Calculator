@@ -119,7 +119,7 @@ def get_course_names(text):
 
         from together import Together
 
-        client = Together(api_key="a61e2798de6101e801d7784c4ccdd6baab3384475b91b2b5114f925c74339c2")
+        client = Together(api_key="9a61e2798de6101e801d7784c4ccdd6baab3384475b91b2b5114f925c74339c2")
 
         response = client.chat.completions.create(
             model="meta-llama/Llama-3-8b-chat-hf",
