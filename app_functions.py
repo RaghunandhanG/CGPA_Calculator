@@ -102,6 +102,7 @@ def generate_df(weights , course_names , sum , grades):
     
      data = pandas.DataFrame()
      weights = [round(i/sum* 100 , 2) for i in weights]
+     course_names = [i.replace('"' ,"") for i in course_names]
      data['weights'] = weights
      data['Subjects'] = course_names
      data["Grades"] = grades
@@ -179,9 +180,7 @@ def plot(data):
     
 def select_course_names(course_names,credits , grades ):
 
-   
-
-        selected_course_names =  st.multiselect("Select the Coureses to be exclude",course_names)
+        selected_course_names =  st.multiselect("Select the Courses to exclude",course_names)
 
         for i in selected_course_names:
             if i in course_names:
