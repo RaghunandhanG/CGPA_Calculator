@@ -148,27 +148,16 @@ def extract(text):
 def plot(data):
     import plotly.graph_objects as go
     import plotly.express as px
-
-
-    # Create bar chart
-    fig = go.Figure(data=[go.Bar(
-        x=data["Subjects"],  # Categories on x-axis
-        y=data["Grades"]
-    )])
-
-    # Customize layout
+    fig = px.bar(data, x='Subjects', y='Grades', title='Grades in each Course' , color='Subjects',labels={'Grades': 'Grade'})
     fig.update_layout(
-        title="Grades in each Course",
         width=1000,  # Set the width of the figure
-        height=600, # Set the height of the figure
-        xaxis=dict(title='Subjects'),  # Label for x-axis
-        yaxis=dict(title='Grade') 
+        height=600,  # Set the height of the figure
+        xaxis_title='Subjects',  # Label for x-axis
+        yaxis_title='Grade'  # Label for y-axis
     )
-
-    fig.update_xaxes(title_text="Courses")
-    fig.update_yaxes(title_text="Grade")
-    fig.update_yaxes(color = "lightcyan")
-
+    for i, row in data.iterrows():
+        fig.add_annotation(x=row['Subjects'], y=row['Grades'], text=str(row['Grades']), showarrow=False)
+    fig.update_xaxes(tickvals=[90])
     st.write(fig)
     fig = px.pie(data, values='weights', names='Subjects', title='Weightage of each Course in %')
     st.write(fig)
