@@ -27,7 +27,7 @@ def read_file(file_path):
     return text
     
 def get_info(text):
-    combinations = ['O 1', 'O 2', 'O 3', 'O 4', 'A+ 1', 'A+ 2', 'A+ 3', 'A+ 4', 'A 1', 'A 2', 'A 3', 'A 4', 'B+ 1', 'B+ 2', 'B+ 3', 'B+ 4', 'B 1', 'B 2', 'B 3', 'B 4', 'C 1', 'C 2', 'C 3', 'C 4', 'AB 1', 'AB 2', 'AB 3', 'AB 4', 'RA 1', 'RA 2', 'RA 3', 'RA 4', 'W 1', 'W 2', 'W 3', 'W 4', 'P 1', 'P 2', 'P 3', 'P 4', 'F 1', 'F 2', 'F 3', 'F 4']
+    combinations = ['O 0' , 'O 1', 'O 2', 'O 3', 'O 4','A+ 0', 'A+ 1', 'A+ 2', 'A+ 3', 'A+ 4','A 0' ,'A 1', 'A 2', 'A 3', 'A 4','B+ 0', 'B+ 1', 'B+ 2', 'B+ 3', 'B+ 4','B 0' ,'B 1', 'B 2', 'B 3', 'B 4', 'C 0' , 'C 1', 'C 2', 'C 3', 'C 4', 'AB 0' , 'AB 1', 'AB 2', 'AB 3', 'AB 4','RA 0' , 'RA 1', 'RA 2', 'RA 3', 'RA 4','W 0', 'W 1', 'W 2', 'W 3', 'W 4','P 0' ,'P 0' , 'P 1', 'P 2', 'P 3', 'P 4', 'F 0' , 'F 1', 'F 2', 'F 3', 'F 4']
     info = []
     n = 0
     for i in range(len(text)):
@@ -41,7 +41,6 @@ def get_info(text):
             n = n + 1
             info.append(str1)
         elif str2 in combinations:
-
             n = n + 1 
             info.append(str2)
     
@@ -85,14 +84,15 @@ def calculate_sgpa(grades , credits):
     sum = 0
     total_credits = 0
     back_logs = 0
+
     for i in range(len(grades)):
         weight = grades[i] * credits[i]
         sum += weight
         weights.append(weight)
         
-        if weight != 0:
-            total_credits += credits[i]
-        else:
+        
+        total_credits += credits[i]
+        if weight == 0 and grades[i] < 6 :
             back_logs += 1
     return round(sum / total_credits , 2) , total_credits , weights , back_logs , sum
 
@@ -102,7 +102,6 @@ def generate_df(weights , course_names , sum , grades):
     
      data = pandas.DataFrame()
      weights = [round(i/sum* 100 , 2) for i in weights]
-     course_names = [i.replace('"' ,"") for i in course_names]
      data['weights'] = weights
      data['Subjects'] = course_names
      data["Grades"] = grades
@@ -180,7 +179,9 @@ def plot(data):
     
 def select_course_names(course_names,credits , grades ):
 
-        selected_course_names =  st.multiselect("Select the Courses to exclude",course_names)
+   
+
+        selected_course_names =  st.multiselect("Select the Courese to be excluded",course_names)
 
         for i in selected_course_names:
             if i in course_names:
