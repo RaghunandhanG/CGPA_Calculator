@@ -27,7 +27,7 @@ def read_file(file_path):
     return text
     
 def get_info(text):
-    combinations = ['O 0' , 'O 1', 'O 2', 'O 3', 'O 4','A+ 0', 'A+ 1', 'A+ 2', 'A+ 3', 'A+ 4','A 0' ,'A 1', 'A 2', 'A 3', 'A 4','B+ 0', 'B+ 1', 'B+ 2', 'B+ 3', 'B+ 4','B 0' ,'B 1', 'B 2', 'B 3', 'B 4', 'C 0' , 'C 1', 'C 2', 'C 3', 'C 4', 'AB 0' , 'AB 1', 'AB 2', 'AB 3', 'AB 4','RA 0' , 'RA 1', 'RA 2', 'RA 3', 'RA 4','W 0', 'W 1', 'W 2', 'W 3', 'W 4','P 0' ,'P 0' , 'P 1', 'P 2', 'P 3', 'P 4', 'F 0' , 'F 1', 'F 2', 'F 3', 'F 4']
+    combinations = ['U 0' , 'U 1', 'U 2', 'U 3', 'U 4','O 0' , 'O 1', 'O 2', 'O 3', 'O 4','A+ 0', 'A+ 1', 'A+ 2', 'A+ 3', 'A+ 4','A 0' ,'A 1', 'A 2', 'A 3', 'A 4','B+ 0', 'B+ 1', 'B+ 2', 'B+ 3', 'B+ 4','B 0' ,'B 1', 'B 2', 'B 3', 'B 4', 'C 0' , 'C 1', 'C 2', 'C 3', 'C 4', 'AB 0' , 'AB 1', 'AB 2', 'AB 3', 'AB 4','RA 0' , 'RA 1', 'RA 2', 'RA 3', 'RA 4','W 0', 'W 1', 'W 2', 'W 3', 'W 4','P 0' ,'P 0' , 'P 1', 'P 2', 'P 3', 'P 4', 'F 0' , 'F 1', 'F 2', 'F 3', 'F 4']
     info = []
     n = 0
     for i in range(len(text)):
@@ -39,9 +39,11 @@ def get_info(text):
         str2 =  text[i] + text[i+1] + text[i+2]
         if str1 in  combinations :
             n = n + 1
+            st.write(str1)
             info.append(str1)
         elif str2 in combinations:
             n = n + 1 
+            st.write(str2)
             info.append(str2)
     
     
@@ -72,7 +74,7 @@ def find_grade_and_credit(info , course_names):
     for i in info:
         credits.append(i.split(" ")[1])
         grade.append(i.split(" ")[0])
-    dct = {'AB':0 , 'B':6 , 'O':10, 'A':8, 'A+':9,'B+':7,'C':5 , "RA":0 , "W":0 , "P" : 0 , "F":0}
+    dct = {'AB':0 , 'B':6 , 'O':10, 'A':8, 'A+':9,'B+':7,'C':5 , "RA":0 , "W":0 , "P" : 0 , "F":0 , "U":0}
     grade = [dct[i] for i in grade]
     credits = [int(i) for i in credits]
 
