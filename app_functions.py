@@ -100,6 +100,7 @@ def calculate_sgpa(grades , credits):
 
 def generate_df(weights , course_names , sum , grades):
     
+     course_names = [i.replace('"' , "") for i in course_names]
      data = pandas.DataFrame()
      weights = [round(i/sum* 100 , 2) for i in weights]
      data['weights'] = weights
@@ -112,9 +113,6 @@ def generate_df(weights , course_names , sum , grades):
      
 def get_course_names(text):
     
-
-        
-
 
         from together import Together
 
