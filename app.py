@@ -26,9 +26,7 @@ if res:
 
             selected_course_names ,credits, grades , res = select_course_names(course_names , credits , grades)
             
-            st.write(course_names)
-            st.write("grades" , grades)
-            st.write("credits" , credits)
+
             sgpa , total_credits ,weights , back_logs , sum = calculate_sgpa(grades , credits)
 
             with st.spinner('Calculating...'):
