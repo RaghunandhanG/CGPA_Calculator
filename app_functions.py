@@ -39,11 +39,9 @@ def get_info(text):
         str2 =  text[i] + text[i+1] + text[i+2]
         if str1 in  combinations :
             n = n + 1
-            st.write(str1)
             info.append(str1)
         elif str2 in combinations:
             n = n + 1 
-            st.write(str2)
             info.append(str2)
     
     
