@@ -21,12 +21,12 @@ if res:
             name_font_size = "35px"
             additional_text_font_size = "25px"
             reg_no = reg_no.replace('"' , "")
-            st.write(f'<h1> <span style="font-size:{additional_text_font_size};">Hi,</span><span style="font-size:{name_font_size};>{name}</span> <span style="font-size:{reg_no_font_size}; color:{reg_no_color};">{reg_no}</span></h1>', unsafe_allow_html=True)
+            st.write(f'<h1> <span style="font-size:{additional_text_font_size};">Hi,</span><span style="font-size:{name_font_size};">{name}</span> <span style="font-size:{reg_no_font_size}; color:{reg_no_color};">{reg_no}</span></h1>', unsafe_allow_html=True)
             grades , credits = find_grade_and_credit(info , course_names)
 
             selected_course_names ,credits, grades , res = select_course_names(course_names , credits , grades)
             
-
+                 
             sgpa , total_credits ,weights , back_logs , sum = calculate_sgpa(grades , credits)
 
             with st.spinner('Calculating...'):
