@@ -27,25 +27,32 @@ def read_file(file_path):
     return text
     
 def get_info(text):
-    combinations = ['U 0' , 'U 1', 'U 2', 'U 3', 'U 4','O 0' , 'O 1', 'O 2', 'O 3', 'O 4','A+ 0', 'A+ 1', 'A+ 2', 'A+ 3', 'A+ 4','A 0' ,'A 1', 'A 2', 'A 3', 'A 4','B+ 0', 'B+ 1', 'B+ 2', 'B+ 3', 'B+ 4','B 0' ,'B 1', 'B 2', 'B 3', 'B 4', 'C 0' , 'C 1', 'C 2', 'C 3', 'C 4', 'AB 0' , 'AB 1', 'AB 2', 'AB 3', 'AB 4','RA 0' , 'RA 1', 'RA 2', 'RA 3', 'RA 4','W 0', 'W 1', 'W 2', 'W 3', 'W 4','P 0' ,'P 0' , 'P 1', 'P 2', 'P 3', 'P 4', 'F 0' , 'F 1', 'F 2', 'F 3', 'F 4']
-    info = []
+    lists = (['O', 'A+', 'A', 'B+', 'B', 'C', 'RA', 'SA', 'W', 'U', 'P', 'F', 'AB'],
+            [0, 1, 2, 3, 4],
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    combinations = [(c, l, n) for c in lists[2] for l in lists[0] for n in lists[2]]
+
+    strings = [' '.join(map(str, comb)) for comb in combinations]
+
+    l = []
     n = 0
     for i in range(len(text)):
         
-        i = i + (n * 5)
-        if i >= len(text) - 5:
-            break
-        str1 = text[i] + text[i+1] + text[i+2] + text[i+3]
-        str2 =  text[i] + text[i+1] + text[i+2]
-        if str1 in  combinations :
-            n = n + 1
-            info.append(str1)
-        elif str2 in combinations:
-            n = n + 1 
-            info.append(str2)
-    
-    
-    return info
+        i += n
+        if text[i :  i+5] in strings:
+            l.append(text[i : i+5])
+            n += 5
+        elif text[i :  i+6] in strings:
+            l.append(text[i :  i+6])
+            n += 5
+        elif text[i :  i+7] in strings:
+            l.append(text[i :  i+6])
+            n += 5
+        elif text[i :  i+7] in strings:
+            l.append(text[i :  i+7])
+            n += 5
+    return l
 
 
 def upload_file_in_db(uploaded_file,file_path):
@@ -68,38 +75,37 @@ def upload_file_in_db(uploaded_file,file_path):
 def find_grade_and_credit(info , course_names):
     
     credits = []
-    grade = []
+    grades = []
     for i in info:
-        credits.append(i.split(" ")[1])
-        grade.append(i.split(" ")[0])
-    dct = {'AB':0 , 'B':6 , 'O':10, 'A':8, 'A+':9,'B+':7,'C':5 , "RA":0 , "W":0 , "P" : 0 , "F":0 , "U":0}
-    grade = [dct[i] for i in grade]
-    credits = [int(i) for i in credits]
-
-        
-    return grade , credits
+        l = i.split(" ")
+        grade = int(l[0])
+        credit = int(l[-1])
+        credits.append(credit)
+        grades.append(grade)
+    return grades , credits
 
 def calculate_sgpa(grades , credits):
     weights = []
     sum = 0
     total_credits = 0
     back_logs = 0
+    credits_completed = 0
 
     for i in range(len(grades)):
         weight = grades[i] * credits[i]
         sum += weight
         weights.append(weight)
-        
-        
+    
         total_credits += credits[i]
+        if weight != 0 :
+            credits_completed += credits[i]
         if weight == 0 and grades[i] < 6 :
             back_logs += 1
-    return round(sum / total_credits , 2) , total_credits , weights , back_logs , sum
+    return round(sum / credits_completed , 2) , total_credits , weights , back_logs , sum ,credits_completed
 
 
 
 def generate_df(weights , course_names , sum , grades):
-    
      course_names = [i.replace('"' , "") for i in course_names]
      data = pandas.DataFrame()
      weights = [round(i/sum* 100 , 2) for i in weights]
@@ -133,7 +139,7 @@ def get_course_names(text):
         course_names = [i.replace("\n" , " ") for i in course_names]
         name = list(name_reg.values())[0]
         reg_no = list(name_reg.values())[1]
-
+        course_names = [course_name.replace('"' , "") for course_name in course_names]
         return course_names , name , reg_no
 
 
@@ -168,7 +174,7 @@ def select_course_names(course_names,credits , grades ):
 
    
 
-        selected_course_names =  st.multiselect("Select the Courese to be excluded",course_names)
+        selected_course_names =  st.multiselect("Select the Courses to be excluded",course_names)
 
         for i in selected_course_names:
             if i in course_names:
