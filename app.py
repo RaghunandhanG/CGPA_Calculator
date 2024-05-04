@@ -12,7 +12,10 @@ if res:
             file_path = os.path.join("uploads", uploaded_file.name)
             upload_file_in_db(uploaded_file , file_path)
             text = read_file(file_path)
-            info = get_info(text)
+            text = text.replace(',' , "")
+            st.write(text)
+            info = get_info(text.replace(f',' , ""))
+            print(text)
             course_names , name , reg_no = get_course_names(text)
 
             reg_no_color = random.choice(["red", "green", "blue","magenta", "yellow"])
