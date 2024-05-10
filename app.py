@@ -49,4 +49,4 @@ if res:
         - **GitHub**: [RaghunandhanG GitHUB](https://github.com/RaghunandhanG)
         """
     )
-            st.write("**Made with ❤️ in iQube**)
+            st.write("**Made with ❤️ in iQube**")
