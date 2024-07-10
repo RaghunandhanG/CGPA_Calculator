@@ -13,15 +13,16 @@ if uploaded:
             file_paths = []
             for uploaded_file in uploaded_files:
                     file_path = os.path.join("uploads", uploaded_file.name)
+                    file_paths.append(file_path)
                     with open(file_path, "wb") as f:
                         f.write(uploaded_file.read())
             course_names = []
             grades = []
             credits = []
             
-            for file_path in list(os.listdir('uploads')):
+            for file_path in set(file_paths):
                 st.write(file_path)
-                text = read_file("uploads/" + file_path)
+                text = read_file(file_path)
                 text = text.replace(',' , "")
                 info = get_info(text.replace(f',' , ""))
                 lst = find_grade_and_credit(info , course_names)
