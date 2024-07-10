@@ -10,7 +10,7 @@ st.title("SGPA CALCULATOR")
 text = '''This app is still in testing stage.
 Encountered an issue? Let us know! Your feedback helps us improve.
 Use the email below to let us know '''
-st.text_area(text)
+st.caption(text)
 uploaded_files , uploaded = upload_file()
 if uploaded:
             file_paths = []
