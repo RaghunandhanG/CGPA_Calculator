@@ -8,13 +8,14 @@ import time
 
 def upload_file():
 
+    os.makedirs('uploads', exist_ok=True)
+    
     uploaded_file = st.file_uploader(f'Choose your PDF file', type="pdf", accept_multiple_files=True)
     if uploaded_file is not None:
-        return uploaded_file , True
+        return uploaded_file, True
     else:
         st.write('Waiting for the file....')
-        return None , False
-
+        return None, False
 
 
 
