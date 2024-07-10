@@ -6,6 +6,9 @@ import numpy as np
 import re
 import time 
 
+import streamlit as st
+import os
+
 def upload_file():
 
     os.makedirs('uploads', exist_ok=True)
@@ -16,6 +19,7 @@ def upload_file():
     else:
         st.write('Waiting for the file....')
         return None, False
+# Example usage in a Streamlit app
 
 
 
@@ -59,7 +63,7 @@ def get_info(text):
 def upload_file_in_db(uploaded_file,file_path):
 
     if uploaded_file is not None:
-        upload_dir = "uploads"
+        upload_dir = "./"
         os.makedirs(upload_dir, exist_ok=True)  
 
         # Create the directory if it doesn't exist
@@ -186,11 +190,8 @@ def select_course_names(course_names,credits , grades ):
     
     
 
-        if len(selected_course_names) != 0:
-            return selected_course_names ,credits , grades , True 
+        return selected_course_names ,credits , grades  
 
-        else:
-            return selected_course_names , credits , grades, False
 
 
 
