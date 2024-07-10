@@ -8,7 +8,7 @@ import time
 
 def upload_file():
 
-    uploaded_file = st.file_uploader(f'Choose your PDF file', type="pdf")
+    uploaded_file = st.file_uploader(f'Choose your PDF file', type="pdf", accept_multiple_files=True)
     if uploaded_file is not None:
         return uploaded_file , True
     else:
@@ -82,7 +82,7 @@ def find_grade_and_credit(info , course_names):
         credit = int(l[-1])
         credits.append(credit)
         grades.append(grade)
-    return grades , credits
+    return [grades , credits]
 
 def calculate_sgpa(grades , credits):
     weights = []
@@ -140,7 +140,7 @@ def get_course_names(text):
         name = list(name_reg.values())[0]
         reg_no = list(name_reg.values())[1]
         course_names = [course_name.replace('"' , "") for course_name in course_names]
-        return course_names , name , reg_no
+        return [course_names , name , reg_no]
 
 
 def extract(text):

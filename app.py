@@ -4,17 +4,39 @@ from app_functions import *
 import os
 import time
 import random
+from itertools import chain
+
 
 st.title("SGPA CALCULATOR")
 
-uploaded_file , res = upload_file()
-if res:
-            file_path = os.path.join("uploads", uploaded_file.name)
-            upload_file_in_db(uploaded_file , file_path)
-            text = read_file(file_path)
-            text = text.replace(',' , "")
-            info = get_info(text.replace(f',' , ""))
-            course_names , name , reg_no = get_course_names(text)
+uploaded_files , uploaded = upload_file()
+
+if uploaded:
+            if uploaded:
+                file_paths = []
+                for uploaded_file in uploaded_files:
+                    file_path = os.path.join("uploads", uploaded_file.name)
+                    with open(file_path, "wb") as f:
+                        file_paths.append(file_path)
+                        f.write(uploaded_file.read())
+            course_names = []
+            grades = []
+            credits = []
+            for file_path in file_paths:
+                text = read_file(file_path)
+                text = text.replace(',' , "")
+                info = get_info(text.replace(f',' , ""))
+                lst = find_grade_and_credit(info , course_names)
+                grades = grades + lst[0]
+                credits = credits + lst[1]
+                lst = get_course_names(text)
+                course_names += lst[0]
+                reg_no = lst[2]
+                name = lst[1]
+
+            flat_list = list(chain.from_iterable(course_names))
+            selected_course_names ,credits, grades , res = select_course_names(course_names , credits , grades)
+            sgpa , total_credits ,weights , back_logs , sum ,credits_completed= calculate_sgpa(grades , credits)
 
             reg_no_color = random.choice(["red", "green", "blue","magenta", "yellow"])
 
@@ -23,13 +45,9 @@ if res:
             additional_text_font_size = "25px"
             reg_no = reg_no.replace('"' , "")
             st.write(f'<h1> <span style="font-size:{additional_text_font_size};">Hi,</span><span style="font-size:{name_font_size};">{name}</span> <span style="font-size:{reg_no_font_size}; color:{reg_no_color};">{reg_no}</span></h1>', unsafe_allow_html=True)
-            grades , credits = find_grade_and_credit(info , course_names)
-            selected_course_names ,credits, grades , res = select_course_names(course_names , credits , grades)
-            
-            sgpa , total_credits ,weights , back_logs , sum ,credits_completed= calculate_sgpa(grades , credits)
 
             with st.spinner('Calculating...'):
-                time.sleep(3)
+                time.sleep(1)
             col1, col2 ,col3,col4= st.columns(4)
             col1.metric(f":blue[SGPA]",sgpa)
             col2.metric(f":green[Total Credits]",total_credits)
@@ -38,7 +56,6 @@ if res:
 
             data = generate_df(weights , course_names , sum , grades)
 
-            plot(data)
             st.write("## Developer Info")
             st.write(
         """
