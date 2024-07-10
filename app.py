@@ -6,24 +6,22 @@ import time
 import random
 from itertools import chain
 
-
 st.title("SGPA CALCULATOR")
-
 uploaded_files , uploaded = upload_file()
 
 if uploaded:
-            if uploaded:
-                file_paths = []
-                for uploaded_file in uploaded_files:
+            file_paths = []
+            for uploaded_file in uploaded_files:
                     file_path = os.path.join("uploads", uploaded_file.name)
                     with open(file_path, "wb") as f:
-                        file_paths.append(file_path)
                         f.write(uploaded_file.read())
             course_names = []
             grades = []
             credits = []
-            for file_path in file_paths:
-                text = read_file(file_path)
+            
+            for file_path in list(os.listdir('uploads')):
+                st.write(file_path)
+                text = read_file("uploads/" + file_path)
                 text = text.replace(',' , "")
                 info = get_info(text.replace(f',' , ""))
                 lst = find_grade_and_credit(info , course_names)
@@ -35,8 +33,8 @@ if uploaded:
                 name = lst[1]
 
             flat_list = list(chain.from_iterable(course_names))
-            selected_course_names ,credits, grades , res = select_course_names(course_names , credits , grades)
-            if res:
+            selected_course_names ,credits, grades = select_course_names(course_names , credits , grades)
+            if len(credits) != 0:
                 sgpa , total_credits ,weights , back_logs , sum ,credits_completed= calculate_sgpa(grades , credits)
 
                 reg_no_color = random.choice(["red", "green", "blue","magenta", "yellow"])
@@ -68,3 +66,5 @@ if uploaded:
             """
         )
                 st.write("**Made with ❤️ in iQube**")
+            else:
+                 st.write("Waiting for Files....")
