@@ -135,14 +135,13 @@ def get_course_names(text):
         
 
 
-        # st.write(name_reg)
         msg = response.choices[0].message.content
         name_reg = extract_name_reg(msg)
         course_names = msg.replace("\n" , " ")
         course_names = extract(course_names)
         course_names = course_names.split(",")
         course_names = [i.replace("\n" , " ") for i in course_names]
-        name = list(name_reg.values())[0]
+        name = "".join(list(name_reg.values())[0])
         reg_no = list(name_reg.values())[1]
         course_names = [course_name.replace('"' , "") for course_name in course_names]
         return [course_names , name , reg_no]
@@ -156,24 +155,6 @@ def extract(text):
   return text[start:end]
 
 
-def plot(data):
-    import plotly.graph_objects as go
-    import plotly.express as px
-    fig = px.bar(data, x='Subjects', y='Grades', title='Grades in each Course' , color='Subjects',labels={'Grades': 'Grade'})
-    fig.update_layout(
-        width=1000,  # Set the width of the figure
-        height=600,  # Set the height of the figure
-        xaxis_title='Subjects',  # Label for x-axis
-        yaxis_title='Grade'  # Label for y-axis
-    )
-    for i, row in data.iterrows():
-        fig.add_annotation(x=row['Subjects'], y=row['Grades'], text=str(row['Grades']), showarrow=False)
-    fig.update_xaxes(tickvals=[90])
-    st.write(fig)
-    fig = px.pie(data, values='weights', names='Subjects', title='Weightage of each Course in %')
-    st.write(fig)
-        
-    
     
 def select_course_names(course_names,credits , grades ):
 
