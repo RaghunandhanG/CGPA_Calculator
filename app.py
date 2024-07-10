@@ -7,6 +7,10 @@ import random
 from itertools import chain
 
 st.title("SGPA CALCULATOR")
+stream_data = '''This app is still in testing stage.
+Encountered an issue? Let us know! Your feedback helps us improve.
+Use the email below to let us know '''
+st.write_stream(stream_data)
 uploaded_files , uploaded = upload_file()
 if uploaded:
             file_paths = []
