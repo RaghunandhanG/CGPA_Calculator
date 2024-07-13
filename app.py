@@ -6,7 +6,7 @@ import time
 import random
 from itertools import chain
 
-st.title("SGPA CALCULATOR")
+st.title("CGPA CALCULATOR")
 text = '''This app is still in testing stage.
 Encountered an issue? Let us know! Your feedback helps us improve.
 Use the email below to let us know '''
@@ -55,7 +55,7 @@ if uploaded:
                         with st.spinner('Calculating...'):
                             time.sleep(1)
                         col1, col2 ,col3,col4= st.columns(4)
-                        col1.metric(f":blue[SGPA]",sgpa)
+                        col1.metric(f":blue[CGPA]",sgpa)
                         col2.metric(f":green[Total Credits]",total_credits)
                         col3.metric(f':blue[Credits Completed]' , credits_completed)
                         col4.metric(f':red[Back Logs]' , back_logs)
